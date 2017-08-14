@@ -1,0 +1,9 @@
+body{
+    background: linear-gradient(to left, #444487, #158acc, #301959, #1c345b);
+    color: #92995a;
+}
+.panel{
+	width: 420px;
+	margin-top: 22px !important;
+	margin: auto;
+}
