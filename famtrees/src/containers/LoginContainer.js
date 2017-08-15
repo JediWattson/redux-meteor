@@ -5,7 +5,8 @@ import { Route, Link, Redirect } from 'react-router-dom';
 import { Button, FormGroup, controlLabel, FormControl } from 'react-bootstrap';
 import { loginUser, input } from '../actions';
 
-class LoginContainer extends Component{
+
+class LoginComponent extends Component{
 
   handleSubmit = (e) => {
     e.preventDefault()
@@ -29,8 +30,7 @@ class LoginContainer extends Component{
 
   render(){
     const {handle, password, loggedIn, registerLink} = this.props.input
-    console.log(this.props)
-    if(!!loggedIn)
+    if(loggedIn)
       return(
         <Redirect from="/login" to="/"/>
       )
@@ -78,7 +78,6 @@ class LoginContainer extends Component{
 }
 
 const mapStateToProps = state => {
-  console.log(state.login)
   const { login, input } = state
   return{
     login,
@@ -86,6 +85,6 @@ const mapStateToProps = state => {
   }
 }
 
-const Login = connect(mapStateToProps)(LoginContainer)
+const LoginContainer = connect(mapStateToProps)(LoginComponent)
 
-export default Login
+export default LoginContainer

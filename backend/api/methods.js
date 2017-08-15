@@ -2,9 +2,9 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 
-
 const Comments = new Mongo.Collection('comments')
 
+Meteor.method("logout",() => console.log(Meteor.userId()))
 
 Meteor.methods({
 	'reset_comments'(){Comments.remove({})},
@@ -26,6 +26,7 @@ Meteor.methods({
 
 if(Meteor.isServer){
 	Meteor.publish('comments', ()=> {
+		console.log("pub")
 		return Comments.find()
 	})
 }

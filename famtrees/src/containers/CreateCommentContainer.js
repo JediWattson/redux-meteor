@@ -1,69 +1,39 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Meteor } from 'meteor/meteor';
+import { connect } from 'react-redux'
 import { Button, FormGroup, FormControl, ControlLabel, ButtonToolbar } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import { createContainer } from 'meteor/react-meteor-data';
+import { logout, input } from '../actions';
 
+let settings = false
 
-class CreateCommentComponent extends React.Component{
-  constructor(props){
-    super(props) 
-    this.state = {
-      comment: '',
-      commentId: null,
-      settingsRed: false,
-      currTime: null
-    };
-    this.handleChangeComment = this.handleChangeComment.bind(this);
-    this.deleteAll = this.deleteAll.bind(this);
-    this.logout = this.logout.bind(this)
-    this.settings = this.settings.bind(this)
-  }
+class CreateCommentComponent extends Component{
 
-  handleChangeComment(e){
-    if(!this.state.comment && !this.state.commentId){
-      Meteor.call(
-        'insert.comment', 
-        {comment: e.target.value}, 
-        (err, ret) => { 
-          this.setState({ commentId: ret })
-        }
-      )
-    }
-    else if(this.state.comment !== ''){
-      let val = e.target.value
-      let curr = new Date().getTime()
-      this.setState({ currTime: curr })
-      setTimeout(()=>{
-        if(curr === this.state.currTime)
-          Meteor.call('update.comment', {id: this.state.commentId, comment: val})
-      }, 40)
-    }
-    this.setState({comment: e.target.value})
-  }
-
-  deleteAll(e){
+  handleChange = (e) => {
     e.preventDefault()
-    Meteor.call('reset.comments')
+    const { dispatch } = this.props
+    input(dispatch, e.target.id, e.target.value)
+  }
+
+
+  deleteAll = (e) => {
+    e.preventDefault()
+
   }
   
-  logout(e){
+  logout = (e) => {
     e.preventDefault()
-    Meteor.logout(()=> this.setState({comment: ""}))
+
   }
 
-  settings(e){
-    e.preventDefault()
-    this.setState({settingsRed: true})
-  }
 
   render(){
-    if(!Meteor.userId())
-      return(
+    const { login, input  } = this.props
+   if(login.loggedIn)
+   return(
         <Redirect from="/" to="/login"/>
       )
-    else if(this.state.settingsRed)
+    else if(settings)
       return(
         <Redirect from="/" to="/settings"/>
       )
@@ -73,7 +43,7 @@ class CreateCommentComponent extends React.Component{
 
         <ButtonToolbar>          
           <Button bsStyle="danger" type="submit" onClick={this.logout} active>Logout</Button>
-          <Button onClick={this.settings} active>Settings</Button>
+          <Button onClick={settings => !settings} active>Settings</Button>
         </ButtonToolbar>
 
         <FormGroup controlId="formControlsTextarea">
@@ -81,8 +51,8 @@ class CreateCommentComponent extends React.Component{
           <FormControl 
             componentClass="textarea" 
             placeholder="Comment area" 
-            value={this.state.comment} 
-            onChange={this.handleChangeComment}
+            value={input.comment} 
+            onChange={this.handleChange}
             />
         </FormGroup>
 
@@ -92,6 +62,14 @@ class CreateCommentComponent extends React.Component{
   }
 }
 
-export default CreateCommentContainer = createContainer(() => {
-  return{};
-}, CreateCommentComponent);
+const mapStateToProps = state => {
+  const { login, input } = state
+  return{
+    login,
+    input
+  }
+}
+
+const CreateCommentContainer = connect(mapStateToProps)(CreateCommentComponent)
+
+export default CreateCommentContainer

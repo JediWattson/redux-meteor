@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux'
-import { RECIEVE_COMMENTS, LOGIN_USER, INPUT } from './actions';
+import { RECIEVE_COMMENTS, LOGIN_USER, INPUT, UPDATE_COMMENT } from './actions';
 
 const login = (state = {}, action) => {
-	console.log(action)
 	switch(action.type){
 		case LOGIN_USER:
 			return{
 				...state,
-				creds: action.creds
+				creds: action.creds,
+				loggedIn: true
 			}
 		default:
 			return state;
@@ -34,10 +34,17 @@ const comments = (state = {}, action) => {
 				comments: action.comments,
 				isRecieved: true
 			}
+		case UPDATE_COMMENT:
+			return{
+				...state,
+				comment: action.comment,
+				isUpdate: true
+			}
 		default:
 			return state;
 	}
 }
+
 
 const promiseApp = combineReducers({
 	login,

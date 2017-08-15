@@ -1,4 +1,4 @@
-import '../api/comments'
+import '../api/methods'
 
 WebApp.rawConnectHandlers.use(function(req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");

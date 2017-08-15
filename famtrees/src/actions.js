@@ -12,14 +12,14 @@ export const fetchComments = (dispatch) => {
 		.then(json => dispatch(recieveComments(json)))			
 }
 
-export const writeComment = (dispatch, comment) =>{
+export const UPDATE_COMMENT = 'UPDATE_COMMENT'
+export const updateComment = (dispatch, comment) =>{
 	return fetch("http://localhost:3001/writer/",{
 		method: "POST",
 		body: comment
 	})
 
 }
-
 
 export const INPUT = 'INPUT'
 export const input = (dispatch, key, value) => {
@@ -30,7 +30,6 @@ export const input = (dispatch, key, value) => {
 	})
 }
 
-
 export const recieveLogin = (json) => ({
 	type: RECIEVE_COMMENTS,
 	creds: json,
@@ -39,15 +38,18 @@ export const recieveLogin = (json) => ({
 })
 
 export const LOGIN_USER = 'LOGIN_USER'
-export const loginUser = (login, dispatch) =>{
+export const loginUser = (login, dispatch) => {
 	console.log(login)
-	return fetch("http://localhost:3001/users/login", {
-		headers:{
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		},
+	const opts = {
 		method: "POST",
-		json: login
-	}).then(res => {res.json()})
-	.then(json => dispatch(recieveLogin(json)))
+      	headers: {
+        	'Accept': 'application/json',
+        	'Content-Type': 'application/json'
+      	},
+      	body: JSON.stringify(login)
+	}
+	return fetch("http://localhost:3001/users/login", opts)
+			.then(res => res.json())
+			.then(json => dispatch(recieveLogin(json)))
+			.catch(err => console.log(err))
 }
